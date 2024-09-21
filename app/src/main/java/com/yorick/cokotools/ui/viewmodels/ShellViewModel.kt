@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.yorick.cokotools.R
 import com.yorick.cokotools.util.FreezeUtils
 import com.yorick.cokotools.util.InstallUtils
+import com.yorick.cokotools.util.PackageUtils
 import com.yorick.cokotools.util.Utils
 import com.yorick.cokotools.util.Utils.mToast
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -129,11 +130,10 @@ class ShellViewModel(application: Application) : AndroidViewModel(application) {
         getFreezeList()
     }
 
-
     private fun getFreezeList() {
         if (_uiState.value.shizukuState == ShizukuState.RUNNING_AND_GRANTED) {
             _uiState.value = _uiState.value.copy(
-                freezeList = FreezeUtils.getFreezeList()
+                freezeList = FreezeUtils.getFreezeList().map { PackageUtils.getAppInfo(it) }
             )
         }
     }

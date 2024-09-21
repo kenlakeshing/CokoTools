@@ -11,17 +11,20 @@ import java.net.URLEncoder
 
 object Utils {
 
+    const val DATA_STORE_FILE_NAME = "user_prefs.pb"
+    const val BUGLY_APP_ID = "008eabd5e5"
+
     private const val QQ_GROUP_URL =
         "mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D"
     private const val QQ_GROUP_KEY = "lFuzgAHN-Q_4j7fodzBaOtKrc_q6NYg9"
     private const val SHIZUKU_PACKAGE = "moe.shizuku.privileged.api"
     private const val SHIZUKU_ACTIVITY = "moe.shizuku.manager.MainActivity"
     private const val REGEX_MATCH_PACKAGE = "^([A-Za-z]{1}[A-Za-z\\d_]*\\.)+[A-Za-z][A-Za-z\\d_]*\$"
-    const val HELP_DOC_URL = "https://yorick.love/2023/02/11/Project/CookTools-doc/"
+    const val HELP_DOC_URL = "https://yorick-ryu.github.io/Project/CookTools-doc/"
     const val ALIPAY_DONATE_URL = "https://qr.alipay.com/fkx17875qbw3mypdlenhee2"
     const val COOLAPK_URL = "http://www.coolapk.com/u/3774603"
-    const val DONATE_CODE_URL = "https://yorick.love/img/qrcode/wechat_donate_code.png"
-    const val BLOG_URL = "https://yorick.love"
+    const val DONATE_CODE_URL = "https://yorick-ryu.github.io/img/wechat_donate_code.png"
+    const val BLOG_URL = "https://yorick-ryu.github.io"
     const val OPEN_SOURCE_URL = "https://github.com/Yorick-Ryu/CokoTools"
     const val SHIZUKU_DOWNLOAD_URL = "https://shizuku.rikka.app/zh-hans/download/"
     const val SHIZUKU_INTRODUCTION_URL = "https://shizuku.rikka.app/zh-hans/introduction/"

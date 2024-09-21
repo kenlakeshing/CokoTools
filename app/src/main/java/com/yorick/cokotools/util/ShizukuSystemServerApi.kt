@@ -7,7 +7,7 @@ import rikka.shizuku.ShizukuBinderWrapper
 import rikka.shizuku.SystemServiceHelper
 
 object ShizukuSystemServerApi {
-    private val PACKAGE_MANAGER: Singleton<IPackageManager?> =
+    val PACKAGE_MANAGER: Singleton<IPackageManager?> =
         object : Singleton<IPackageManager?>() {
             override fun create(): IPackageManager {
                 return IPackageManager.Stub.asInterface(

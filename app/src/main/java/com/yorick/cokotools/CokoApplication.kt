@@ -14,17 +14,18 @@ import com.yorick.cokotools.data.repository.CategoryRepositoryImpl
 import com.yorick.cokotools.data.repository.ContributorRepositoryImpl
 import com.yorick.cokotools.data.repository.ToolRepositoryImpl
 import com.yorick.cokotools.util.ApplicationUtils
+import com.yorick.cokotools.util.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.lsposed.hiddenapibypass.HiddenApiBypass
-
-private const val DATA_STORE_FILE_NAME = "user_prefs.pb"
-private const val BUGLY_APP_ID = "008eabd5e5"
+import java.io.File
 
 private val Context.userPreferencesStore: DataStore<UserPreferences> by dataStore(
-    fileName = DATA_STORE_FILE_NAME,
+    fileName = Utils.DATA_STORE_FILE_NAME,
     serializer = UserPreferencesSerializer
 )
+
+lateinit var cokoApplication: CokoApplication
 
 class CokoApplication : Application() {
     private val applicationScope = CoroutineScope(SupervisorJob())
@@ -34,12 +35,15 @@ class CokoApplication : Application() {
     val contributorRepository by lazy { ContributorRepositoryImpl(db.contributorDao()) }
     val userPreferencesRepository by lazy { UserPreferencesRepository(userPreferencesStore) }
 
+    lateinit var tmpApkDir: File
+
     override fun onCreate() {
         super.onCreate()
+        cokoApplication = this
         val preferences = getSharedPreferences("count", MODE_PRIVATE)
         val count: Int = preferences.getInt("count", 0)
         if (count > 0) {
-            CrashReport.initCrashReport(applicationContext, BUGLY_APP_ID, true)
+            CrashReport.initCrashReport(applicationContext, Utils.BUGLY_APP_ID, true)
         }
     }
 

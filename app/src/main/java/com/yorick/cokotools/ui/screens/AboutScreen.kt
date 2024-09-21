@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGri
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -32,9 +31,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -81,30 +82,6 @@ fun AboutScreen(
                 SnackbarResult.ActionPerformed -> {}
                 SnackbarResult.Dismissed -> {}
             }
-        }
-    }
-    val blogInfo = buildAnnotatedString {
-        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.outline)) {
-            append(stringResource(id = R.string.visit_blog))
-        }
-        withStyle(
-            style = SpanStyle(
-                color = MaterialTheme.colorScheme.primary,
-            )
-        ) {
-            append(Utils.BLOG_URL)
-        }
-    }
-    val openSourceInfo = buildAnnotatedString {
-        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.outline)) {
-            append(stringResource(id = R.string.open_source_desc))
-        }
-        withStyle(
-            style = SpanStyle(
-                color = MaterialTheme.colorScheme.primary,
-            )
-        ) {
-            append(stringResource(id = R.string.open_source))
         }
     }
     Column(
@@ -198,38 +175,58 @@ fun AboutScreen(
         }
         Spacer(modifier = Modifier.height(16.dp))
         CardWithTitle(
-            modifier = Modifier
-                .animateContentSize(),
+            modifier = Modifier.animateContentSize(),
             cardTitle = stringResource(id = R.string.about)
         ) {
-            Row(
-                Modifier
+            Column(
+                modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 6.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Button(onClick = {
-                    openUrl(Utils.COOLAPK_URL, context)
-                }) {
-                    Text(text = stringResource(id = R.string.coolapk_index))
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(onClick = {
+                        openUrl(Utils.COOLAPK_URL, context)
+                    }) {
+                        Text(text = stringResource(id = R.string.coolapk_index))
+                    }
+                    Button(onClick = { Utils.joinQQGroup(context) }) {
+                        Text(text = stringResource(id = R.string.joinGroup))
+                    }
                 }
-                Button(onClick = { Utils.joinQQGroup(context) }) {
-                    Text(text = stringResource(id = R.string.joinGroup))
-                }
+                Text(
+                    text = buildAnnotatedString {
+                        append(stringResource(id = R.string.visit_blog))
+                        withLink(
+                            LinkAnnotation.Url(
+                                url = Utils.BLOG_URL,
+                                styles = TextLinkStyles(style = SpanStyle(MaterialTheme.colorScheme.primary))
+                            )
+                        ) {
+                            append(Utils.BLOG_URL)
+                        }
+                    },
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    text = buildAnnotatedString {
+                        append(stringResource(id = R.string.open_source_desc))
+                        withLink(
+                            LinkAnnotation.Url(
+                                url = Utils.OPEN_SOURCE_URL,
+                                styles = TextLinkStyles(style = SpanStyle(MaterialTheme.colorScheme.primary))
+                            )
+                        ) {
+                            append(stringResource(id = R.string.open_source))
+                        }
+                    },
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
-            ClickableText(
-                modifier = Modifier.padding(start = 16.dp, bottom = 10.dp),
-                text = blogInfo, onClick = {
-                    openUrl(Utils.BLOG_URL, context)
-                }
-            )
-            ClickableText(
-                modifier = Modifier.padding(start = 16.dp, bottom = 10.dp),
-                text = openSourceInfo, onClick = {
-                    openUrl(Utils.OPEN_SOURCE_URL, context)
-                }
-            )
         }
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
