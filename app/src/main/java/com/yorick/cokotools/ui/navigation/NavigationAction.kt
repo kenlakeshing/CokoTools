@@ -13,10 +13,11 @@ import androidx.navigation.NavHostController
 import com.yorick.cokotools.R
 
 object CookToolsRoute {
+    const val MAIN = "Main"
     const val HOME = "Home"
     const val SHELL = "Shell"
     const val SETTING = "Setting"
-    const val DONATE = "Donate"
+    const val ABOUT = "About"
     const val TOOL = "Tool"
 }
 

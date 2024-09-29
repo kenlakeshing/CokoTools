@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,14 +16,20 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +44,7 @@ import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.yorick.cokotools.R
@@ -47,12 +55,14 @@ import com.yorick.cokotools.util.Utils.openUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(
     modifier: Modifier = Modifier,
     contributorViewModel: ContributorViewModel,
     scope: CoroutineScope,
     hostState: SnackbarHostState,
+    navController: NavController,
 ) {
     val context = LocalContext.current
     val contributors = contributorViewModel.contributors.sortedBy { -it.amount }
@@ -85,148 +95,166 @@ fun AboutScreen(
         }
     }
     Column(
-        modifier = modifier
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState())
+        modifier = modifier.fillMaxSize()
     ) {
-        CardWithTitle(
-            modifier = Modifier
-                .height(240.dp)
-                .animateContentSize(),
-            cardTitle = stringResource(id = R.string.contributors),
-            onClickInfo = onClickInfo
-        ) {
-            LazyHorizontalStaggeredGrid(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp, bottom = 14.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                rows = StaggeredGridCells.Fixed(4),
-            ) {
-                items(items = contributors, key = { it.id }) { contributor ->
-                    AssistChip(
-                        onClick = { /*TODO*/ },
-                        label = {
-                            Text(text = contributor.name)
-                        },
-                        modifier = Modifier.padding(start = 12.dp),
-                        border = AssistChipDefaults.assistChipBorder(enabled = true),
-                        shape = MaterialTheme.shapes.medium,
-                        colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer
-                        ),
-                    )
-                }
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        CardWithTitle(
-            modifier = Modifier,
-            cardTitle = stringResource(id = R.string.donate),
-            onClickInfo = onClickDonateInfo
-        ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 0.dp, horizontal = 16.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.Top
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+        TopAppBar(
+            navigationIcon = {
+                IconButton(
+                    modifier = Modifier.padding(horizontal = 10.dp),
+                    onClick = { navController.popBackStack() }
                 ) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .size(150.dp)
-                            .clip(MaterialTheme.shapes.medium),
-                        model = ImageRequest.Builder(context)
-                            .data(Utils.DONATE_CODE_URL)
-                            .crossfade(true)
-                            .build(),
-                        error = painterResource(id = R.drawable.donate_code),
-                        contentScale = ContentScale.Fit,
-                        contentDescription = stringResource(id = R.string.donate)
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.back)
                     )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Text(text = stringResource(id = R.string.wx_donate_code))
                 }
-                Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    Text(
-                        text = stringResource(id = R.string.donate_info),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Button(onClick = { Utils.openWeChatScan(context) }) {
-                        Text(text = stringResource(id = R.string.open_wechat))
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = {
-                        Utils.openAlipayPayPage(
-                            Utils.ALIPAY_DONATE_URL,
-                            context
+            },
+            title = { Text(text = stringResource(id = R.string.about)) }
+        )
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            CardWithTitle(
+                modifier = Modifier
+                    .height(240.dp)
+                    .animateContentSize(),
+                cardTitle = stringResource(id = R.string.contributors),
+                onClickInfo = onClickInfo
+            ) {
+                LazyHorizontalStaggeredGrid(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp, bottom = 14.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    rows = StaggeredGridCells.Fixed(4),
+                ) {
+                    items(items = contributors, key = { it.id }) { contributor ->
+                        AssistChip(
+                            onClick = { /*TODO*/ },
+                            label = {
+                                Text(text = contributor.name)
+                            },
+                            modifier = Modifier.padding(start = 12.dp),
+                            border = AssistChipDefaults.assistChipBorder(enabled = true),
+                            shape = MaterialTheme.shapes.medium,
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                            ),
                         )
-                    }) {
-                        Text(text = stringResource(id = R.string.donate_by_alipay))
                     }
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        CardWithTitle(
-            modifier = Modifier.animateContentSize(),
-            cardTitle = stringResource(id = R.string.about)
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 6.dp)
+            Spacer(modifier = Modifier.height(16.dp))
+            CardWithTitle(
+                modifier = Modifier,
+                cardTitle = stringResource(id = R.string.donate),
+                onClickInfo = onClickDonateInfo
             ) {
                 Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 0.dp, horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.Top
                 ) {
-                    Button(onClick = {
-                        openUrl(Utils.COOLAPK_URL, context)
-                    }) {
-                        Text(text = stringResource(id = R.string.coolapk_index))
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        AsyncImage(
+                            modifier = Modifier
+                                .size(150.dp)
+                                .clip(MaterialTheme.shapes.medium),
+                            model = ImageRequest.Builder(context)
+                                .data(Utils.DONATE_CODE_URL)
+                                .crossfade(true)
+                                .build(),
+                            error = painterResource(id = R.drawable.donate_code),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = stringResource(id = R.string.donate)
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(text = stringResource(id = R.string.wx_donate_code))
                     }
-                    Button(onClick = { Utils.joinQQGroup(context) }) {
-                        Text(text = stringResource(id = R.string.joinGroup))
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column {
+                        Text(
+                            text = stringResource(id = R.string.donate_info),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Button(onClick = { Utils.openWeChatScan(context) }) {
+                            Text(text = stringResource(id = R.string.open_wechat))
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(onClick = {
+                            Utils.openAlipayPayPage(
+                                Utils.ALIPAY_DONATE_URL,
+                                context
+                            )
+                        }) {
+                            Text(text = stringResource(id = R.string.donate_by_alipay))
+                        }
                     }
                 }
-                Text(
-                    text = buildAnnotatedString {
-                        append(stringResource(id = R.string.visit_blog))
-                        withLink(
-                            LinkAnnotation.Url(
-                                url = Utils.BLOG_URL,
-                                styles = TextLinkStyles(style = SpanStyle(MaterialTheme.colorScheme.primary))
-                            )
-                        ) {
-                            append(Utils.BLOG_URL)
-                        }
-                    },
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = buildAnnotatedString {
-                        append(stringResource(id = R.string.open_source_desc))
-                        withLink(
-                            LinkAnnotation.Url(
-                                url = Utils.OPEN_SOURCE_URL,
-                                styles = TextLinkStyles(style = SpanStyle(MaterialTheme.colorScheme.primary))
-                            )
-                        ) {
-                            append(stringResource(id = R.string.open_source))
-                        }
-                    },
-                    style = MaterialTheme.typography.bodyMedium
-                )
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            CardWithTitle(
+                modifier = Modifier.animateContentSize(),
+                cardTitle = stringResource(id = R.string.about)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 6.dp)
+                ) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Button(onClick = {
+                            openUrl(Utils.COOLAPK_URL, context)
+                        }) {
+                            Text(text = stringResource(id = R.string.coolapk_index))
+                        }
+                        Button(onClick = { Utils.joinQQGroup(context) }) {
+                            Text(text = stringResource(id = R.string.joinGroup))
+                        }
+                    }
+                    Text(
+                        text = buildAnnotatedString {
+                            append(stringResource(id = R.string.visit_blog))
+                            withLink(
+                                LinkAnnotation.Url(
+                                    url = Utils.BLOG_URL,
+                                    styles = TextLinkStyles(style = SpanStyle(MaterialTheme.colorScheme.primary))
+                                )
+                            ) {
+                                append(Utils.BLOG_URL)
+                            }
+                        },
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(
+                        text = buildAnnotatedString {
+                            append(stringResource(id = R.string.open_source_desc))
+                            withLink(
+                                LinkAnnotation.Url(
+                                    url = Utils.OPEN_SOURCE_URL,
+                                    styles = TextLinkStyles(style = SpanStyle(MaterialTheme.colorScheme.primary))
+                                )
+                            ) {
+                                append(stringResource(id = R.string.open_source))
+                            }
+                        },
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
         }
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
