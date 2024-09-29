@@ -19,6 +19,8 @@ jobs:
           java-version: 19
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          version: '8.4' # Specify the Gradle version you want to use
       - name: Build with Gradle
         run: ./gradlew build
       - name: Sign app APK
@@ -30,7 +32,7 @@ jobs:
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
-      - run: mv ${{steps.sign_app.outputs.signedReleaseFile}} CookTools_$GITHUB_REF_NAME.apk
+      - run: mv ${{ steps.sign_app.outputs.signedReleaseFile }} CookTools_${{ github.ref_name }}.apk
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "*.apk"
