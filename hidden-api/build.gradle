@@ -22,7 +22,7 @@ android {
             signingConfig signingConfigs.sign
         }
         debug {
-            signingConfig signingConfigs.sign
+            null
         }
     }
     compileOptions {
