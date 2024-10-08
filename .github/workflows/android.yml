@@ -20,7 +20,7 @@ jobs:
         with:
           gradle-version: 8.4
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew assembleRelease
       - name: Sign app APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app

@@ -12,13 +12,25 @@ int incrementRefine() {
     String fileName = "custom.properties"
     def key = "build.refine"
     File propertyFile = new File(rootDir.getAbsoluteFile(), fileName)
+
+    if (!propertyFile.exists()) {
+        return -1 // 文件不存在，返回-1
+    }
+
     properties.load(propertyFile.newDataInputStream())
-    def refine = properties.getProperty(key).toInteger() + 1
+    def refineValue = properties.getProperty(key)
+
+    if (refineValue == null) {
+        return -1 // 属性不存在，返回-1
+    }
+
+    def refine = refineValue.toInteger() + 1
     properties.setProperty(key, refine.toString())
     properties.store(propertyFile.newDataOutputStream(), 'Increment this value on every single build. ' +
             'You can access this value by calling BuildConfig.REFINE')
     return refine
 }
+
 
 def refine = incrementRefine()
 android {
@@ -124,7 +136,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.13.1'
 
     // Compose
-    def composeBom = platform('androidx.compose:compose-bom:2024.09.02')
+    def composeBom = platform('androidx.compose:compose-bom:2024.09.03')
     implementation composeBom
     androidTestImplementation composeBom
     implementation 'androidx.compose.foundation:foundation'
@@ -147,7 +159,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.8.6'
 
     // Navigation
-    implementation "androidx.navigation:navigation-compose:2.8.1"
+    implementation "androidx.navigation:navigation-compose:2.8.2"
     implementation 'io.coil-kt:coil-compose:2.5.0'
 
     // Accompanist
