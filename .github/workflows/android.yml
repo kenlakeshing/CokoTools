@@ -19,8 +19,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.4
+      - name: Generate debug key
+        run: ./gradlew installDebug
       - name: Build with Gradle
-        run: ./gradlew assembleRelease -x signRelease
+        run: ./gradlew assembleRelease
       - name: Sign app APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app

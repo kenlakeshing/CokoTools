@@ -127,7 +127,7 @@
     <string name="open_source">开源</string>
     <string name="open_source_desc">应用采用Apache-2.0 License协议</string>
     <string name="donate">捐赠</string>
-    <string name="donate_info">如果喜欢本软件，可以请我喝杯冰可乐。</string>
+    <string name="donate_info">如果你喜欢本软件，可以请我喝杯冰可乐。</string>
     <string name="donate_tips">截图打开微信扫一扫，可以留言你的名字，我将会在下次版本更新中永远镌刻在贡献墙上！</string>
     <string name="donate_by_alipay">支付宝捐赠</string>
     <string name="open_wechat">微信扫一扫</string>
